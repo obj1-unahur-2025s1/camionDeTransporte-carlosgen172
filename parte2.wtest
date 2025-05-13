@@ -1,0 +1,62 @@
+import camion2.*
+import cosas2.*
+
+describe "total de bultos" {
+  test "se cargan 3 bultos al camion" {
+    camion.cargar(knight)
+    camion.cargar(arena)
+    camion.cargar(residuos)
+    assert.equals(3, camion.totalDeBultos())
+  }
+  test "se cargan 4 bultos al camion" {
+    camion.cargar(bumblebee)
+    camion.cargar(embalaje)
+    assert.equals(4, camion.totalDeBultos())
+  }
+  test "se carga un paquete de 460 ladrillos al camion" {
+    paqueteLadrillos.aumentarCantidad(460)
+    camion.cargar(paqueteLadrillos)
+    assert.equals(3, camion.totalDeBultos())
+  }
+  test "se carga una bateria con misiles cargados al camion" {
+    bateria.tieneMisiles()
+    camion.cargar(bateria)
+    assert.equals(2, camion.totalDeBultos())
+  }
+  test "se carga un contenedor sorpresa al camion" {
+    bateria.tieneMisiles()
+    camion.cargar(bateria)
+
+    arena.aumentarPeso(30)
+    camion.cargar(arena)
+
+    paqueteLadrillos.aumentarCantidad(60)
+    camion.cargar(paqueteLadrillos)
+    assert.equals(4, camion.totalDeBultos())
+  }
+}
+
+describe "consecuencias de la carga" {
+  test "cargando a bumblebee" {
+    camion.cargar(bumblebee)
+    assert.equals(robot, bumblebee.transformacion())
+  }
+  test "cargando un paquete de ladrillos" {
+    camion.cargar(paqueteLadrillos)
+    assert.equals(12, paqueteLadrillos.cantidadLadrillos())
+  }
+  test "cargando arena" {
+    camion.cargar(arena)
+    assert.equals(0, arena.peso())
+  }
+  test "cargando una bateria antiaerea" {
+    bateria.tieneMisiles()
+    camion.cargar(bateria)
+    assert.that(bateria.misiles())
+  }
+  test "cargando un contenedor portuario" {
+    contenedor.agregar(bumblebee)
+    camion.cargar(contenedor)
+    assert.equals(30, contenedor.nivelPeligro())
+  }
+}

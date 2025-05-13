@@ -1,9 +1,94 @@
 import camion.*
+import cosas.*
 
-describe "group of test for camion" {
+describe "camion" {
 
-  test "first test" {
-    assert.that(true)
+  test "el camion tiene 4 cosas" {
+    bumblebee.transformacion(robot)
+    camion.cargar(bumblebee)
+
+    arena.peso(150)
+    camion.cargar(arena)
+
+    bateria.tieneMisiles()
+    camion.cargar(bateria)
+
+    paqueteLadrillos.cantidadLadrillos(80)
+    embalaje.objeto(paqueteLadrillos)
+    camion.cargar(embalaje)
+    
+    assert.equals(4, camion.cargaTotal().size())
   }
+  test "la carga del camion es par" {
+    bumblebee.transformacion(robot)
+    camion.cargar(bumblebee)
 
+    arena.peso(100)
+    camion.cargar(arena)
+
+    paqueteLadrillos.cantidadLadrillos(40)
+    embalaje.objeto(paqueteLadrillos)
+    camion.cargar(embalaje)
+    
+    assert.that(camion.cargaTotalEsPar())
+  }
+  test "alguna cosa que pese 200" {
+    bumblebee.transformacion(robot)
+    camion.cargar(bumblebee)
+
+    arena.peso(27)
+    camion.cargar(arena)
+
+    embalaje.objeto(bateria)
+    camion.cargar(embalaje)
+    
+    assert.that(camion.consultarUnaCargaConPeso(200))
+  }
+  test "obtener primer cosa cargada con 0 nivel de peligro" {
+    residuos.peso(25)
+    camion.cargar(residuos)
+
+    camion.cargar(knight)
+
+    embalaje.objeto(bateria)
+    camion.cargar(embalaje)
+    
+    assert.equals(embalaje, camion.nivelPeligroPrimeraCarga(0))
+  }
+  test "cosas que superen 180 nivel de peligro" {
+    residuos.peso(5)
+    camion.cargar(residuos)
+
+    camion.cargar(knight)
+
+    embalaje.objeto(bumblebee)
+    camion.cargar(embalaje)
+    
+    assert.equals([residuos], camion.cargasConPeligroArribaDe(180))
+  }
+  test "lista de cosas que superan el nivel de peligro de bumblebee" {
+    camion.cargar(knight)
+
+    paqueteLadrillos.cantidadLadrillos(200)
+    camion.cargar(paqueteLadrillos)
+
+    residuos.peso(50)
+    camion.cargar(residuos)
+    
+    bateria.tieneMisiles()
+    camion.cargar(bateria)
+    assert.equals([residuos, bateria], camion.cargasQueSuperenNivelPeligroDe(bumblebee))
+  }
+  test "el camion esta execedido de su peso" {
+    paqueteLadrillos.cantidadLadrillos(800)
+    camion.cargar(paqueteLadrillos)
+    assert.that(camion.estaExedido())
+  }
+  test "puede circular en ruta" {
+    camion.cargar(knight)
+    paqueteLadrillos.cantidadLadrillos(500)
+    camion.cargar(paqueteLadrillos)
+
+    assert.that(camion.puedeCircularEnRutaDeNivel(30))
+  }
 }
